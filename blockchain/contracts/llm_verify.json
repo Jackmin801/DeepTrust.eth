@@ -58,9 +58,34 @@
     "name": "getVerificationStatus",
     "outputs": [
       {
+        "internalType": "string",
+        "name": "prompt",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "promptHash",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "claimedHash",
+        "type": "string"
+      },
+      {
         "internalType": "bool",
-        "name": "",
+        "name": "isVerified",
         "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "entity",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "model",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
