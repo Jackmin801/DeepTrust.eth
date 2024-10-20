@@ -8,14 +8,17 @@ app.use(express.json());
 
 const polygonBlockchain = new PolygonBlockchain(
     'https://rpc.cardona.zkevm-rpc.com', 
-    '0xa4a12dd358be32123602ef0ebebb80234523ea74', 
+    '0x82c5631aec140a6c3b90312310f74747114bfe7d', 
     './blockchain/contracts/llm_verify.json'
 );
+
 app.post('/verify', async (req, res) => {
-    const { promptHash, claimedHash, isVerified, entity, model } = req.body;
+    const { prompt, claimedHash, entity, model } = req.body;
     
     try {
-        if (!promptHash || !claimedHash || isVerified === undefined || !entity || !model) {
+        let isVerified = false;
+
+        if (!prompt || !claimedHash || !entity || !model) {
             throw new Error('Missing required parameters');
         }
         
@@ -25,7 +28,8 @@ app.post('/verify', async (req, res) => {
         }
         
         console.log('Calling recordVerification...');
-        const txHash = await polygonBlockchain.recordVerification(promptHash, claimedHash, Boolean(isVerified), entity, model);
+
+        const txHash = await polygonBlockchain.recordVerification(prompt, claimedHash, isVerified, entity, model);
         console.log('Transaction hash:', txHash);
         
         res.json({ success: true, transactionHash: txHash });

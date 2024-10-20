@@ -8,14 +8,12 @@ export class PolygonBlockchain extends BaseBlockchain {
     async checkContract() {
         try {
             const code = await this.web3.eth.getCode(this.contract.options.address);
-            console.log('Contract bytecode:', code);
             if (code === '0x' || code === '0x0') {
                 console.error('No contract found at the specified address');
                 return false;
             }
             console.log('Contract found at the specified address');
 
-            // Try to call a view function
             try {
                 const result = await this.contract.methods.getVerificationStatus('test', 'test', 'test').call();
                 console.log('getVerificationStatus test result:', result);
@@ -30,14 +28,11 @@ export class PolygonBlockchain extends BaseBlockchain {
         }
     }
 
-    async recordVerification(promptHash, claimedHash, isVerified, entity, model) {
-        console.log('Attempting to record verification with parameters:', 
-            { promptHash, claimedHash, isVerified, entity, model });
-    
-        const gasPrice = await this.web3.eth.getGasPrice();
-        console.log('Current gas price:', gasPrice);
-            
+    async recordVerification(prompt, claimedHash, isVerified, entity, model) {
+        const gasPrice = await this.web3.eth.getGasPrice();     
+        const promptHash = this.web3.utils.sha3(prompt);
         const data = this.contract.methods.recordVerification(
+            prompt,
             promptHash,
             claimedHash,
             isVerified,
@@ -53,7 +48,6 @@ export class PolygonBlockchain extends BaseBlockchain {
                 from: this.web3.eth.defaultAccount
             });
             console.log('Gas estimate:', gasEstimate);
-    
     
             console.log('Signing transaction...');
             const signedTx = await this.web3.eth.accounts.signTransaction(
