@@ -1204,8 +1204,25 @@ class LlamaForCausalLM(LlamaPreTrainedModel, GenerationMixin):
 
         hidden_states = outputs[0]
         if COMMIT_CONFIG.commit_file is not None:
-            COMMIT_CONFIG.commit_file.write(hash_tensor(hidden_states.detach()))
-            COMMIT_CONFIG.commit_file.write("\n")
+            detached_hidden_states = hidden_states.detach()
+            if COMMIT_CONFIG.input_prompt_length is None: # Generate case
+                COMMIT_CONFIG.commit_file.write(hash_tensor(detached_hidden_states))
+                COMMIT_CONFIG.commit_file.write("\n")
+            else: # Validate case
+                # Prefill hash
+                _hidden_dim = detached_hidden_states.shape[-1]
+                prefill_view = detached_hidden_states[:, :COMMIT_CONFIG.input_prompt_length, :]
+                prefill_view = prefill_view.as_strided(prefill_view.size(), (COMMIT_CONFIG.input_prompt_length * _hidden_dim, _hidden_dim, 1))
+                COMMIT_CONFIG.commit_file.write(hash_tensor(prefill_view))
+                COMMIT_CONFIG.commit_file.write("\n")
+
+                for i in range(COMMIT_CONFIG.input_prompt_length, detached_hidden_states.shape[1]):
+                    # Update hash
+                    update_view = detached_hidden_states[:, i:i+1, :]
+                    update_view = update_view.as_strided(update_view.size(), (_hidden_dim, _hidden_dim, 1))
+                    COMMIT_CONFIG.commit_file.write(hash_tensor(update_view))
+                    COMMIT_CONFIG.commit_file.write("\n")
+
         if self.config.pretraining_tp > 1:
             lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
             logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
