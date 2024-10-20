@@ -1,0 +1,13 @@
+{
+  "name": "llm_verification_system",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "bun server.js"
+  },
+  "dependencies": {
+    "express": "^5.0",
+    "web3": "^4.13.0"
+  },
+  "devDependencies": {}
+}

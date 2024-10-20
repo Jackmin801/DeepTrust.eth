@@ -18,12 +18,12 @@
       },
       {
         "internalType": "string",
-        "name": "businessName",
+        "name": "entity",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "modelUsed",
+        "name": "model",
         "type": "string"
       }
     ],
@@ -36,7 +36,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "businessName",
+        "name": "entity",
         "type": "string"
       },
       {
