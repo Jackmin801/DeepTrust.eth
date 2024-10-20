@@ -30,7 +30,10 @@ graph TD
 
 ## Setup Instructions
 
-1. Clone the repository (repository URL to be added)
+1. Clone the repository
+   ```bash
+   git clone https://github.com/Jackmin801/DeepTrust.eth
+   ```
 2. Install dependencies:
    ```
    npm install
