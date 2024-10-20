@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-LLM Verify is an innovative application that leverages AI and blockchain technology to log the intermediate computations of Large Language Model (LLM) inference in a verifiable way. The logs allow inference providers to "commit" to the calculation they performed, which can then be verified 200x faster by validators. By utilizing Polygon's blockchain, we ensure transparent, immutable, and decentralized storage of AI model outputs, enhancing trust and accountability in AI systems.
+LLM Verify is an innovative application that leverages AI and blockchain technology to log the intermediate computations of Large Language Model (LLM) inference in a verifiable way. The logs allow inference providers to **commit** to the calculation they performed, which can then be **verified 200x faster** by validators. By utilizing Polygon's blockchain, we ensure transparent, immutable, and decentralized storage of AI model outputs, enhancing trust and accountability in AI systems.
 
 
 ## Architecture Diagram
@@ -25,7 +25,7 @@ graph TD
 - Blockchain: Polygon (zkEVM testnet)
 - Smart Contract: Solidity
 - Web3 Interaction: web3.js
-- AI Integration: Large Language Models (specific model integration to be implemented)
+- LLM Inference: Huggingface Transformers (widely adopted and pluggable to other inference engines)
 - Secure Execution: Lit Protocol (Trusted Execution Environments)
 
 ## Setup Instructions
