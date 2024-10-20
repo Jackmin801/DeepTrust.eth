@@ -10,6 +10,7 @@ from io import TextIOWrapper
 @dataclass
 class DeepTrustCommitConfig:
     commit_file: Optional[TextIOWrapper] = None
+    input_prompt_length: Optional[int] = None
 
 COMMIT_CONFIG = DeepTrustCommitConfig()
 
