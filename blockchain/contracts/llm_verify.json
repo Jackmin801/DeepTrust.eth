@@ -2,9 +2,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "promptHash",
-        "type": "bytes32"
+        "type": "string"
       },
       {
         "internalType": "string",
@@ -45,9 +45,9 @@
         "type": "string"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "promptHash",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "name": "getVerificationStatus",
