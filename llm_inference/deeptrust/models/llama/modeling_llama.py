@@ -1211,16 +1211,20 @@ class LlamaForCausalLM(LlamaPreTrainedModel, GenerationMixin):
             else: # Validate case
                 # Prefill hash
                 _hidden_dim = detached_hidden_states.shape[-1]
-                prefill_view = detached_hidden_states[:, :COMMIT_CONFIG.input_prompt_length, :]
-                prefill_view = prefill_view.as_strided(prefill_view.size(), (COMMIT_CONFIG.input_prompt_length * _hidden_dim, _hidden_dim, 1))
+                _prefill_view = detached_hidden_states[:, :COMMIT_CONFIG.input_prompt_length, :]
+                prefill_view = torch.empty(_prefill_view.shape)
+                prefill_view.copy_(_prefill_view)
+                #prefill_view = prefill_view.as_strided(prefill_view.size(), (COMMIT_CONFIG.input_prompt_length * _hidden_dim, _hidden_dim, 1))
                 COMMIT_CONFIG.commit_file.write(hash_tensor(prefill_view))
                 COMMIT_CONFIG.commit_file.write("\n")
 
                 for i in range(COMMIT_CONFIG.input_prompt_length, detached_hidden_states.shape[1]):
-                    # Update hash
-                    update_view = detached_hidden_states[:, i:i+1, :]
-                    update_view = update_view.as_strided(update_view.size(), (_hidden_dim, _hidden_dim, 1))
-                    COMMIT_CONFIG.commit_file.write(hash_tensor(update_view))
+                    # Decode hash
+                    _decode_view = detached_hidden_states[:, i:i+1, :]
+                    decode_view = torch.empty(_decode_view.shape)
+                    decode_view.copy_(_decode_view)
+                    #decode_view = decode_view.as_strided(decode_view.size(), (_hidden_dim, _hidden_dim, 1))
+                    COMMIT_CONFIG.commit_file.write(hash_tensor(decode_view))
                     COMMIT_CONFIG.commit_file.write("\n")
 
         if self.config.pretraining_tp > 1:
