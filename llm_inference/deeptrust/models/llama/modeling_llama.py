@@ -52,6 +52,7 @@ from transformers.utils import (
 
 from deeptrust.hashing import hash_tensor
 from .configuration_llama import LlamaConfig
+from ..utils import COMMIT_CONFIG
 
 
 logger = logging.get_logger(__name__)
@@ -1202,7 +1203,9 @@ class LlamaForCausalLM(LlamaPreTrainedModel, GenerationMixin):
         )
 
         hidden_states = outputs[0]
-        print(hash_tensor(hidden_states.detach()))
+        if COMMIT_CONFIG.commit_file is not None:
+            COMMIT_CONFIG.commit_file.write(hash_tensor(hidden_states.detach()))
+            COMMIT_CONFIG.commit_file.write("\n")
         if self.config.pretraining_tp > 1:
             lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
             logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
