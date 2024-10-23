@@ -1383,11 +1383,8 @@ class LlamaForCausalLM(LlamaPreTrainedModel, GenerationMixin):
                     (hash_tensor(detached_hidden_states))
                 )
             else:  # Validate case
-                # Prefill hash
                 _hidden_dim = detached_hidden_states.shape[-1]
-                # _prefill_view = detached_hidden_states[:, :COMMIT_CONFIG.input_prompt_length, :]
-                # prefill_view = torch.empty(_prefill_view.shape)
-                # prefill_view.copy_(_prefill_view)
+                # Prefill hash
                 prefill_view = detached_hidden_states.as_strided(
                     (
                         detached_hidden_states.shape[0],
@@ -1400,16 +1397,13 @@ class LlamaForCausalLM(LlamaPreTrainedModel, GenerationMixin):
 
                 for i in range(
                     self.deeptrust_commit.input_tokens,
-                    len(self.deeptrust_commit.completion),
+                    len(self.deeptrust_commit.completion) - 1,
                 ):
                     # Decode hash
-                    # _decode_view = detached_hidden_states[:, i:i+1, :]
-                    # decode_view = torch.empty(_decode_view.shape)
-                    # decode_view.copy_(_decode_view)
                     decode_view = detached_hidden_states.as_strided(
-                        (1, _hidden_dim, 1),
+                        (1, 1, _hidden_dim),
                         (_hidden_dim, _hidden_dim, 1),
-                        (self.deeptrust_commit.input_tokens + i) * _hidden_dim,
+                        i * _hidden_dim,
                     )
                     self.deeptrust_commit.hashes.append((hash_tensor(decode_view)))
 
