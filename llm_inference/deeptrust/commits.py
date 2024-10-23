@@ -12,7 +12,7 @@ class Commit:
     dtype: str
     engine: str
     hashes: List[str]
-    completion: List[int]
+    completion: List[int] | None
     input_tokens: int
     generation_config: dict
 
